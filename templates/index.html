@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location App</title>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            fetch('/get_location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ latitude: latitude, longitude: longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("demo").innerHTML = "Latitude: " + data.latitude + "<br>Longitude: " + data.longitude;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        getLocation(); // Call getLocation() immediately when the script is parsed
+    </script>
+</head>
+<body>
+    <h1>Location App</h1>
+    <p id="demo"></p>
+</body>
+</html>
